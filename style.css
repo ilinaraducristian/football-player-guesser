@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+}
+
+#app {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+}
+
+html, body, #app {
+    height: 100%;
+}
+
+button, input {
+    width: min-content;
+}
