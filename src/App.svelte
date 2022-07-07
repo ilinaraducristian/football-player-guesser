@@ -4,16 +4,19 @@
   const players = [
     {
       name: "Lionel Messi",
+      img: 'messi.jpeg',
       born: new Date("June 24, 1987"),
       country: "Argentina",
     },
     {
       name: "Cristiano Ronaldo",
+      img: 'ronaldo.jpg',
       born: new Date("February 5, 1985"),
       country: "Portugal",
     },
     {
       name: "Mohamed Salah",
+      img: 'salah.jpeg',
       born: new Date("June 15, 1992"),
       country: "Egypt",
     },
@@ -22,7 +25,6 @@
   let player, result, attempt, gameFinished;
 
   function guess(guessedPlayer) {
-    if (gameFinished) return;
     if (guessedPlayer === player.name) {
       result = "Ai ghicit!";
       gameFinished = true;
@@ -48,7 +50,7 @@
 </script>
 
 <button on:click={newGame}>New Game</button>
-<h1>{player.name}</h1>
+<img src={player.img} alt="">
 <br />
 <AutoComplete
   items={players.map((player) => player.name)}
@@ -56,5 +58,4 @@
   disabled={gameFinished}
 />
 <br />
-<button on:click={guess}>Guess</button>
 <h1>{result}</h1>

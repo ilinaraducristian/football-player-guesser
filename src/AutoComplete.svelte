@@ -1,5 +1,5 @@
 <script>
-  export let onSelection = (item) => {};
+  export let onSelection = (_) => {};
   export let items = [];
   export let disabled = false;
   let displayedItems = [];
@@ -9,10 +9,9 @@
     if (value === "") {
       displayedItems = [];
     } else {
-      const filtered = items.filter((item) =>
+      displayedItems = items.filter((item) =>
         item.toLowerCase().includes(value.toLowerCase())
       );
-      displayedItems = filtered;
     }
   }
 
