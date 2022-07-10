@@ -2,30 +2,32 @@
   const Nationalities = {
     Swiss: 0,
     Argentinian: 1,
-    0: 'Swiss',
-    1: 'Argentinian',
+    0: "Swiss",
+    1: "Argentinian",
   };
 
   const Leagues = {
     A: 0,
     B: 1,
-    0: 'A',
-    1: 'B'
+    0: "A",
+    1: "B",
   };
 
   const Teams = {
     PSG: 0,
     Manchester: 1,
-    0: 'PSG',
-    1: "Manchester"
+    0: "PSG",
+    1: "Manchester",
   };
 
   const Positions = {
     Forward: 0,
     Backward: 1,
-    0: 'Forward',
-    1: 'Backward'
+    0: "Forward",
+    1: "Backward",
   };
+
+  const Attributes = [Nationalities, Leagues, Teams, Positions];
 
   const players = [
     {
@@ -52,66 +54,72 @@
     },
   ];
 
-  const Statuses = {
-    NewGame: 0,
-    Guessed: 1,
-    NoAttemptsLeft: 2,
-    BadGuess: 3,
-  };
-
   const maxAttempts = 3;
 
   let playerToBeGuessed,
     value,
     attempts,
     autocompleteDisplayedItems,
-    status, badGuesses;
+    badGuesses,
+    isGuessed;
 
   function newGame() {
     playerToBeGuessed = players[Math.floor(Math.random() * players.length)];
     value = "";
     autocompleteDisplayedItems = [];
     attempts = maxAttempts;
-    status = Statuses.NewGame;
     badGuesses = [];
+    isGuessed = false;
   }
-
-  $: {
-    if (value == "") {
-      autocompleteDisplayedItems = [];
-    } else {
-      autocompleteDisplayedItems = players.filter((player) =>
-        player.name.toLowerCase().includes(value.toLowerCase())
-      );
-    }
-  }
-
-  newGame();
 
   function guess(player) {
+    value = "";
     if (player.id === playerToBeGuessed.id) {
-      status = Statuses.Guessed;
-      value = "";
+      isGuessed = true;
       return;
     }
     attempts--;
+    badGuesses = [...badGuesses, player];
     if (attempts === 0) {
-      status = Statuses.NoAttemptsLeft;
-      value = "";
       return;
     }
-    status = Statuses.BadGuess;
-    value = "";
-    badGuesses.push(player);
   }
+
+  function attributeToString(attributeIndex, attribute) {
+    if (attributeIndex === Attributes.length) return new Date().getFullYear() - new Date(attribute).getFullYear();
+    return Attributes[attributeIndex][attribute];
+  }
+
+  $: autocompleteDisplayedItems =
+    value == ""
+      ? []
+      : players.filter((player) =>
+          player.name.toLowerCase().includes(value.toLowerCase())
+        );
+
+  $: gameFinished = attempts <= 0 || isGuessed;
+
+  newGame();
 </script>
 
-<img src={`${playerToBeGuessed.id}.png`} alt="player" />
+{#if gameFinished}
+  <h1>{playerToBeGuessed.name}</h1>
+{/if}
 
-<button type="button">New game</button>
+<img
+  src={`${playerToBeGuessed.id}.png`}
+  alt="player"
+  class={attempts > 0 && !isGuessed ? "filter" : ""}
+/>
 
-{#if attempts > 0}
-  <input type="text" bind:value placeholder={`GUESS ${maxAttempts-attempts} OF ${maxAttempts}`} />
+<button type="button" on:click={newGame}>New game</button>
+
+{#if !gameFinished}
+  <input
+    type="text"
+    bind:value
+    placeholder={`GUESS ${maxAttempts - attempts + 1} OF ${maxAttempts}`}
+  />
 {/if}
 
 {#if autocompleteDisplayedItems.length > 0}
@@ -134,8 +142,7 @@
         <ul>
           {#each player.attributes as attribute, i}
             <li>
-              <span>{attribute}</span>
-              <span>{attribute === playerToBeGuessed.attributes[i]}</span>
+              <span class={attribute === playerToBeGuessed.attributes[i] ? 'active' : ''}>{attributeToString(i, attribute)}</span>
             </li>
           {/each}
         </ul>

@@ -8,3 +8,35 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+img {
+  width: 300px;
+  align-self: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  align-self: center;
+}
+
+img.filter {
+  filter: blur(10px) hue-rotate(120deg);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul ul {
+  display: flex;
+}
+
+span {
+  margin: 0 10px;
+}
+
+.active {
+  background-color: darkgreen;
+}
